@@ -15,6 +15,9 @@ function navigateToWorkspace() {
             <div :class="$style['line']">存成永不褪色的模样</div>
             <div :class="$style['button']" @click="navigateToWorkspace">点击体验</div>
         </div>
+        <!--半透明遮罩-->
+        <div :class="$style['overlay']">
+        </div>
     </div>
 </template>
 
@@ -33,6 +36,7 @@ function navigateToWorkspace() {
 }
 
 .home-content {
+    z-index: 2;
     position: absolute;
     .line {
         font-family: PingFang SC;
@@ -83,5 +87,14 @@ function navigateToWorkspace() {
     left: px2vw(212);
     top: px2vw(218);
 
+}
+
+.overlay {
+    position: absolute;
+    height: 100%;
+    width: px2vw(622);
+    top: 0;
+    left: 0;
+    background: linear-gradient(270.53deg, rgba(0, 0, 0, 0) 0.35%, #000000 99.43%);
 }
 </style>
