@@ -30,7 +30,7 @@ function navigateToWorkspace() {
   background-color: black;
   position: relative;
 
-  background: url('https://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/%E6%96%B0%E5%AF%B9%E8%AF%9D.png');
+  background-image: url('https://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/%E6%96%B0%E5%AF%B9%E8%AF%9D.png');
   background-size: cover;
   background-position: center;
 }

@@ -28,7 +28,7 @@ function sidebarItemClick(item) {
 </template>
 
 <style module lang="scss">
-@use '../../mixin.scss' as *;
+@use '@/mixin.scss' as *;
 
 .sidebar-container {
   width: 100%;

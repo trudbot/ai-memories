@@ -1,5 +1,5 @@
 <script setup>
-import Sidebar from '../SIdebar/index.vue';
+import Sidebar from './components/Sidebar/index.vue';
 </script>
 <template>
     <div :class="$style['workspace-container']">
@@ -7,13 +7,13 @@ import Sidebar from '../SIdebar/index.vue';
             <Sidebar />
         </div>
         <div :class="$style['main-content']">
-            <!-- 主内容区域 -->
+            <RouterView />
         </div>
     </div>
 </template>
 
 <style module lang="scss">
-@use '../../mixin.scss' as *;
+@use '@/mixin.scss' as *;
 
 .workspace-container {
   height: 100%;
@@ -32,5 +32,9 @@ import Sidebar from '../SIdebar/index.vue';
 .main-content {
   @include flex-fill; // 占满剩余宽度
   height: 100%;
+  padding-top: 45px;
+  padding-left: px2vw(16);
+  padding-right: px2vw(88);
+  overflow-y: auto; // 允许垂直滚动
 }
 </style>

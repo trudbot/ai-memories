@@ -12,7 +12,7 @@ const router = useRouter();
 </template>
 
 <style module lang="scss">
-@use '../../mixin.scss' as *;
+@use '@/mixin.scss' as *;
 
 .header-container {
   background-color: black;

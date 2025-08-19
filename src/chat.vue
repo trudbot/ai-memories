@@ -2,17 +2,11 @@
 import { UserOutlined, RobotOutlined } from '@ant-design/icons-vue';
 import { Bubble, Sender } from 'ant-design-x-vue';
 import { ref, h, nextTick } from 'vue';
-import OpenAI from "openai";
 import markdownit from 'markdown-it';
 import { Typography } from 'ant-design-vue';
+import { createStreamChat } from './llm/streamChat.js';
 
 defineOptions({ name: 'AIChatPage' });
-
-const openai = new OpenAI({
-    baseURL: 'https://api.deepseek.com',
-    apiKey: 'sk-7a81f3d7726c4b5da64a172be92d8d52',
-    dangerouslyAllowBrowser: true // 允许在浏览器中使用
-});
 
 const md = markdownit({ html: true, breaks: true });
 const renderMarkdown = (content) =>
@@ -36,6 +30,12 @@ const messages = ref<Message[]>([
   }
 ]);
 
+// 基于现有首条消息，初始化对话历史与系统提示
+const chat = createStreamChat({
+  systemPrompt: '你是一个友好、有帮助的AI助手。请用简洁、自然的语言回答用户的问题。',
+  history: messages.value.map(m => ({ role: m.isUser ? 'user' : 'assistant', content: m.content }))
+});
+
 const isTyping = ref(false);
 const messageId = ref(2);
 const chatContainer = ref<HTMLElement>();
@@ -58,67 +58,33 @@ const sendMessage = async (content: string) => {
   scrollToBottom();
 
   try {
-    // 准备对话历史
-    const conversationHistory = messages.value
-      .filter(msg => msg.content !== '正在思考中...')
-      .map(msg => ({
-        role: msg.isUser ? "user" as const : "assistant" as const,
-        content: msg.content
-      }));
-
-    // 添加系统提示
-    const messagesForAI = [
-      { 
-        role: "system" as const, 
-        content: "你是一个友好、有帮助的AI助手。请用简洁、自然的语言回答用户的问题。" 
-      },
-      ...conversationHistory
-    ];
-
-    // 调用AI API
-    const completion = await openai.chat.completions.create({
-      messages: messagesForAI,
-      model: "deepseek-chat",
-      temperature: 1.0,
-      stream: true
-    });
-
-    console.log('AI调用成功，开始处理流式响应...');
-
-    // 创建AI消息
+    // 创建AI占位消息
     const aiMessage: Message = {
       id: messageId.value++,
       content: '',
       isUser: false,
       timestamp: new Date()
     };
-    
     messages.value.push(aiMessage);
     isTyping.value = false;
 
-    // 流式处理AI回复
-    let content = '';
-    for await (const chunk of completion) {
-      const delta = chunk.choices[0]?.delta?.content || '';
-      content += delta;
-      console.log('AI回复更新:', content);
-      
-      // 找到最后一条AI消息并更新内容 - 触发响应式更新
-      const lastMessageIndex = messages.value.length - 1;
-      if (lastMessageIndex >= 0 && !messages.value[lastMessageIndex].isUser) {
-        messages.value[lastMessageIndex] = {
-          ...messages.value[lastMessageIndex],
-          content: content
-        };
+    // 使用封装的流式发送
+    await chat.sendMessage(userMessage.content, {
+      onUpdate: async ({ content: full }) => {
+        const lastMessageIndex = messages.value.length - 1;
+        if (lastMessageIndex >= 0 && !messages.value[lastMessageIndex].isUser) {
+          messages.value[lastMessageIndex] = {
+            ...messages.value[lastMessageIndex],
+            content: full
+          };
+        }
+        await nextTick();
+        scrollToBottom();
       }
-      
-      await nextTick();
-      scrollToBottom();
-    }
-
+    });
   } catch (error) {
     console.error('AI调用失败:', error);
-    
+
     // 错误处理 - 添加错误消息
     const errorMessage: Message = {
       id: messageId.value++,
@@ -126,10 +92,10 @@ const sendMessage = async (content: string) => {
       isUser: false,
       timestamp: new Date()
     };
-    
+
     messages.value.push(errorMessage);
     isTyping.value = false;
-    
+
     await nextTick();
     scrollToBottom();
   }
