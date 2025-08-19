@@ -1,0 +1,113 @@
+@use 'sass:meta';
+@use 'sass:math';
+
+// Design width for px -> vw conversion
+$design-width: 1440 !default;
+
+// Convert px (or unitless number treated as px) to vw based on $design-width
+// Example: width: px2vw(144); // => 10vw when design width is 1440
+@function px2vw($value, $base: $design-width) {
+  @if meta.type-of($value) != 'number' {
+    @error 'px2vw($value) expects a number, got #{meta.type-of($value)}';
+  }
+  @if $base == 0 {
+    @error 'px2vw($base) must not be 0';
+  }
+
+  // Normalize to unitless px value
+  @if math.unit($value) == 'px' {
+    $value: math.div($value, 1px);
+  } @else if math.is-unitless($value) {
+    // treat as px already
+  } @else {
+    @error 'px2vw only accepts px or unitless values, got unit #{math.unit($value)}';
+  }
+
+  @return math.div($value, $base) * 100vw;
+}
+
+// Helper mixin: set a property with vw value converted from px
+// Example: @include vw(width, 320); // width: 22.2222vw (for 1440 design width)
+@mixin vw($property, $px, $base: $design-width) {
+  #{$property}: px2vw($px, $base);
+}
+
+// Flex layout mixin for easy flexbox setup
+// @param $direction: row | column | row-reverse | column-reverse
+// @param $justify: flex-start | flex-end | center | space-between | space-around | space-evenly
+// @param $align: flex-start | flex-end | center | stretch | baseline
+// @param $wrap: nowrap | wrap | wrap-reverse
+// @param $gap: any valid gap value (px, rem, etc.)
+@mixin flex(
+  $direction: row,
+  $justify: flex-start,
+  $align: flex-start,
+  $wrap: nowrap,
+  $gap: null
+) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  flex-wrap: $wrap;
+  
+  @if $gap {
+    gap: $gap;
+  }
+}
+
+// Common flex layout shortcuts
+@mixin flex-center($direction: row, $gap: null) {
+  @include flex($direction, center, center, nowrap, $gap);
+}
+
+@mixin flex-between($direction: row, $align: center, $gap: null) {
+  @include flex($direction, space-between, $align, nowrap, $gap);
+}
+
+@mixin flex-around($direction: row, $align: center, $gap: null) {
+  @include flex($direction, space-around, $align, nowrap, $gap);
+}
+
+@mixin flex-column($justify: flex-start, $align: flex-start, $gap: null) {
+  @include flex(column, $justify, $align, nowrap, $gap);
+}
+
+@mixin flex-row($justify: flex-start, $align: flex-start, $gap: null) {
+  @include flex(row, $justify, $align, nowrap, $gap);
+}
+
+// Flex item shortcuts
+@mixin flex-item($grow: 0, $shrink: 1, $basis: auto) {
+  flex: $grow $shrink $basis;
+}
+
+@mixin flex-fill {
+  flex: 1 1 auto;
+}
+
+@mixin flex-none {
+  flex: none;
+}
+
+/* Usage examples:
+.selector {
+  padding-left: px2vw(24);
+  font-size: px2vw(16px);
+  @include vw(margin-top, 48);
+}
+
+// Flex examples:
+.container {
+  @include flex-center(row, 16px);          // centered flex row with 16px gap
+  @include flex-between(row, center, 8px);  // space-between with center align
+  @include flex-column(flex-start, stretch); // column layout, stretch items
+}
+
+.item {
+  @include flex-fill;                       // flex: 1 1 auto
+  @include flex-item(2, 1, 100px);         // flex: 2 1 100px
+}
+*/
+
+
