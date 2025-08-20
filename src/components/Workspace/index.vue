@@ -1,5 +1,5 @@
 <script setup>
-import Sidebar from './components/Sidebar/index.vue';
+import Sidebar from './components/SIdebar/index.vue';
 </script>
 <template>
     <div :class="$style['workspace-container']">
