@@ -23,6 +23,7 @@ import SendIcon from './icons/send.vue';
   border-radius: 16px;
   background: linear-gradient(90deg, #2B3850 0%, #1C212B 100%);
   padding: 25px 33px 20px 33px;
+  z-index: 3;
 }
 
 .input-box {

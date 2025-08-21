@@ -35,5 +35,6 @@ const router = useRouter();
     margin-left: px2vw(38);
     @include flex-center;
     cursor: pointer;
+    z-index: 2;
 }
 </style>

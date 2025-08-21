@@ -44,6 +44,7 @@ const themes = [
 .theme-container {
     width: 100%;
     margin-top: px2vw(38);
+    z-index: 3;
 }
 
 .title {
