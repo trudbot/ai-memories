@@ -1,4 +1,4 @@
-import agent from "./llm.js";
+import agent, { model } from "./llm.js";
 
 /**
  * 
@@ -17,14 +17,17 @@ export function createStreamChat(params) {
    * @param {(response: string) => void} onFinish
    */
   async function sendMessage(input, onUpdate, onFinish) {
+    console.log('sendMessage', input);
     if (input.type === "text") {
       history.push({ role: "user", content: input.content });
     } else if (input.type === "image") {
-      history.push({ role: "user", content: [
-        { type: 'input_image', image_url: input.content, detail: 'low' }
-      ]});
+      history.push({
+        role: "user", content: [
+          { type: 'input_image', image_url: input.content, detail: 'low' }
+        ]
+      });
     }
-
+    console.log('history', history);
     const stream = await createRequest([
       { role: "system", content: params.systemPrompt },
       ...history
@@ -46,7 +49,7 @@ export function createStreamChat(params) {
 
   function createRequest(messages) {
     return agent.responses.create({
-      model: "gpt-5-nano",
+      model,
       input: messages,
       stream: true,
     })

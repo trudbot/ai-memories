@@ -1,16 +1,11 @@
 import { createStreamChat } from "../../llm/streamChat.js";
 import prompt from "./prompt.js";
+import usePrompt from '../../utils/usePrompt.js'
 
-export function createChatAgent() {
+export function createChatAgent(themeword) {
     const chat = createStreamChat({
-        systemPrompt: prompt,
+        systemPrompt: usePrompt(prompt, { themeword })
     });
-    
-    async function sendMessage(message, onUpdate, onFinish) {
-        return await chat.sendMessage(message, onUpdate, onFinish);
-    }
-    
-    return {
-        sendMessage
-    }
+
+    return chat;
 }
