@@ -1,13 +1,32 @@
 <script setup>
 import VoiceIcon from './icons/voice.vue';
 import SendIcon from './icons/send.vue';
+import { ref } from 'vue';
+
+const text = ref('');
+
+// 向上层发生消息事件
+const emitter = defineEmits(['sendMessage']);
+
+function handleSend() {
+    if (text.value.trim()) {
+        // 处理发送逻辑
+        console.log('发送内容:', text.value);
+        emitter('sendMessage', text.value);
+        text.value = ''; // 清空输入框
+    }
+}
 </script>
 <template>
     <div :class="$style['input-wrapper']">
-        <textarea :class="$style['input-box']" placeholder="讲一讲你想录入的主题，开始制作你的专属回忆吧～"></textarea>
+        <textarea
+            :class="$style['input-box']"
+            placeholder="讲一讲你想录入的主题，开始制作你的专属回忆吧～"
+            v-model="text"
+        ></textarea>
         <div :class="$style['functions']">
             <div :class="$style['voice-input']"><VoiceIcon /></div>
-            <div :class="$style['send']"><SendIcon /></div>
+            <div :class="$style['send']" @click="handleSend"><SendIcon /></div>
         </div>
     </div>
 </template>

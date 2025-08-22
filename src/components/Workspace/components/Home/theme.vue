@@ -26,12 +26,18 @@ const themes = [
         image: 'https://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/Frame%202036085242.png'
     }
 ]
+
+const emitter = defineEmits(['themeSelected']);
+
+function selectTheme(theme) {
+    emitter('themeSelected', theme);
+}
 </script>
 <template>
     <div :class="$style['theme-container']">
         <p :class="$style['title']">可选主题</p>
         <div :class="$style['theme-list']">
-            <div :class="$style['theme-item']" v-for="(item, index) in themes" :key="index">
+            <div :class="$style['theme-item']" v-for="(item, index) in themes" :key="index" @click="selectTheme(item)">
                 <img :src="item.image" alt="" />
             </div>
         </div>
