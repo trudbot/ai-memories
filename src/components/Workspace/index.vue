@@ -25,11 +25,12 @@ import Sidebar from './components/SIdebar/index.vue';
   background-color: black;
   position: relative;
   @include flex-row;
+  color: white;
 }
 
 .sidebar {
   z-index: 2;
-  width: px2vw(242);
+  width: max(242px, px2vw(242));
   flex-shrink: 0; // 防止缩小
   height: 100%;
 }
@@ -38,9 +39,6 @@ import Sidebar from './components/SIdebar/index.vue';
   z-index: 2;
   @include flex-fill; // 占满剩余宽度
   height: 100%;
-  padding-top: 45px;
-  padding-left: px2vw(16);
-  padding-right: px2vw(88);
   overflow-y: auto; // 允许垂直滚动
 }
 

@@ -7,8 +7,19 @@ const text = ref('');
 
 // 向上层发生消息事件
 const emitter = defineEmits(['sendMessage']);
+const {placeholder, ban} = defineProps({
+    placeholder: {
+        type: String,
+        default: '讲一讲你想录入的主题，开始制作你的专属回忆吧～'
+    },
+    ban: {
+        type: Boolean,
+        default: false
+    }
+});
 
 function handleSend() {
+    if (ban) return;
     if (text.value.trim()) {
         // 处理发送逻辑
         console.log('发送内容:', text.value);
@@ -21,7 +32,7 @@ function handleSend() {
     <div :class="$style['input-wrapper']">
         <textarea
             :class="$style['input-box']"
-            placeholder="讲一讲你想录入的主题，开始制作你的专属回忆吧～"
+            :placeholder="placeholder"
             v-model="text"
         ></textarea>
         <div :class="$style['functions']">

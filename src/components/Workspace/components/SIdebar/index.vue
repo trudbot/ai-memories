@@ -3,12 +3,33 @@ import { ref } from 'vue';
 import HomeSvg from './icons/AigcSystemHome.vue';
 import ToolkitSvg from './icons/AigcSystemAItoolkit.vue';
 import WorksSvg from './icons/AigcSystemWorks.vue';
+import { useRouter } from 'vue-router';
 
 const activeItem = ref('home');
+const router = useRouter();
+
+const routeMap = {
+    home: '/workspace/home',
+    inspiration: '/workspace/memento',
+    myWorks: '/workspace/myWorks'
+};
+
+const reverseRouteMap = {
+    '/workspace/home': 'home',
+    '/workspace/memento': 'inspiration',
+    '/workspace/myWorks': 'myWorks'
+};
 
 function sidebarItemClick(item) {
     activeItem.value = item;
+    router.push(routeMap[item]);
 }
+
+router.beforeEach(e => {
+    if (reverseRouteMap[e.path]) {
+        activeItem.value = reverseRouteMap[e.path];
+    }
+})
 </script>
 
 <template>
@@ -18,7 +39,7 @@ function sidebarItemClick(item) {
                 <HomeSvg /><span :class="$style['text']">首页</span>
             </div>
             <div :class="[$style['menu-item'], { [$style['active']]: activeItem === 'inspiration' }]" @click="sidebarItemClick('inspiration')">
-                <ToolkitSvg /><span :class="$style['text']">灵感</span>
+                <ToolkitSvg /><span :class="$style['text']">回忆碎片</span>
             </div>
             <div :class="[$style['menu-item'], { [$style['active']]: activeItem === 'myWorks' }]" @click="sidebarItemClick('myWorks')">
                 <WorksSvg /><span :class="$style['text']">我的作品</span>

@@ -23,6 +23,18 @@ function handleThemeSelected(theme) {
 </script>
 
 <template>
-    <Input @send-message="handleSendMessage"/>
-    <Theme @themeSelected="handleThemeSelected"/>
+    <div :class="$style['workspace-home-container']">
+        <Input @send-message="handleSendMessage"/>
+        <Theme @themeSelected="handleThemeSelected"/>
+    </div>
 </template>
+
+<style module lang="scss">
+@use '@/mixin.scss' as *;
+.workspace-home-container {
+  width: 100%;
+  padding-top: 45px;
+  padding-left: px2vw(16);
+  padding-right: px2vw(88);
+}
+</style>

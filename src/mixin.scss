@@ -26,6 +26,10 @@ $design-width: 1440 !default;
   @return math.div($value, $base) * 100vw;
 }
 
+@function minvw($value) {
+  @return max($value * 1px, px2vw($value));
+}
+
 // Helper mixin: set a property with vw value converted from px
 // Example: @include vw(width, 320); // width: 22.2222vw (for 1440 design width)
 @mixin vw($property, $px, $base: $design-width) {

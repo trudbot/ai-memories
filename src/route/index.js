@@ -1,4 +1,4 @@
-import { createWebHistory, createRouter } from 'vue-router'
+import { createWebHistory, createRouter, createWebHashHistory } from 'vue-router'
 
 import HomeView from '../components/Home/index.vue'
 import WorkspaceView from '../components/Workspace/index.vue'
@@ -18,12 +18,28 @@ const routes = [
       {
         path: 'home',
         component: WorkspaceHome
+      },
+      {
+        path: 'memento',
+        component: () => import('@/components/Workspace/components/MementoList/index.vue')
+      },
+      {
+        path: 'myWorks',
+        component: () => import('@/components/Workspace/components/MyWorks/index.vue')
+      },
+      {
+        path: 'memento-chat',
+        component: () => import('@/components/Workspace/components/MementoChat/index.vue')
+      },
+      {
+        path: 'memento-edit',
+        component: () => import('@/components/Workspace/components/MementoEdit/index.vue')
       }
     ]
   },
 ]
 
 export const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL || '/'),
+  history: createWebHashHistory(import.meta.env.BASE_URL || '/'),
   routes,
 });
