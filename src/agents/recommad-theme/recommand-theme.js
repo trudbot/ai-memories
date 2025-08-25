@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 import prompt from './prompt.js'
 import { requestJsonOutput } from '../../llm/jsonAgent.js';
 
@@ -12,7 +12,7 @@ export const RecommandThemeSchema = z.object({
 export async function recommandTheme(userInput) {
     const res = await requestJsonOutput(prompt, userInput, RecommandThemeSchema);
     if (res.error) {
-        throw new Error("无法提取主题或场景词");
+        throw new Error("无法提取主题或场景词" + JSON.stringify(res));
     }
     return {
         ...res,

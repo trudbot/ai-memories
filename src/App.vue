@@ -1,6 +1,6 @@
 <script lang="js" setup>
 import Header from './components/Header/index.vue';
-
+import FullLoading from './components/FullLoading/index.vue';
 </script>
 
 <template>
@@ -12,6 +12,7 @@ import Header from './components/Header/index.vue';
       <RouterView />
     </div>
   </div>
+  <FullLoading />
 </template>
 
 <style module lang="scss">
