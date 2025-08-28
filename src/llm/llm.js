@@ -4,25 +4,25 @@ import OpenAI from "openai";
 const PROXY = "http://127.0.0.1:7890";
 
 
-const autoProxyFetch = await (async () => {
-  if (typeof window !== "undefined") {
-    // 浏览器环境不需要代理
-    return fetch;
-  } else {
-    const { HttpsProxyAgent } = await import('https-proxy-agent');
-    const nodeFetch = (await import('node-fetch')).default;
-    return (url, options = {}) => {
-      const restOptions = { ...options };
+// const autoProxyFetch = await (async () => {
+//   if (typeof window !== "undefined") {
+//     // 浏览器环境不需要代理
+//     return fetch;
+//   } else {
+//     const { HttpsProxyAgent } = await import('https-proxy-agent');
+//     const nodeFetch = (await import('node-fetch')).default;
+//     return (url, options = {}) => {
+//       const restOptions = { ...options };
 
-      if (PROXY) {
-        const agent = new HttpsProxyAgent(PROXY);
-        restOptions.agent = agent;
-      }
+//       if (PROXY) {
+//         const agent = new HttpsProxyAgent(PROXY);
+//         restOptions.agent = agent;
+//       }
 
-      return nodeFetch(url, restOptions);
-    }
-  }
-})()
+//       return nodeFetch(url, restOptions);
+//     }
+//   }
+// })()
 
 // ------------------------------------------------
 
