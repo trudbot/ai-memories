@@ -71,12 +71,19 @@ export async function createOpenAIClient({ apiKey, baseURL } = {}) {
     apiKey: key,
     baseURL: base,
     dangerouslyAllowBrowser: true,
-    fetch: autoProxyFetch
+    // fetch: autoProxyFetch
   });
 }
 
 const openai = await createOpenAIClient();
+// const deepseek = await createOpenAIClient({
+//   apiKey: import.meta.env?.VITE_DEEPSEEK_API_KEY || undefined,
+//   baseURL: 'https://api.deepseek.com'
+// });
 
 export default openai;
 
 export const model = 'gpt-5-nano';
+// export {
+//   deepseek
+// }

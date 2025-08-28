@@ -1,17 +1,30 @@
 <script setup>
-import { reactive, ref, nextTick, useTemplateRef } from 'vue';
+import { reactive, ref, nextTick, useTemplateRef, computed } from 'vue';
 import Input from '../Home/input.vue';
 import Loading from '../Loading/index.vue';
+import { useRoute, useRouter } from 'vue-router';
+import {memento, theme} from '../../../../data/session-data';
+import {createChatAgent} from '../../../../agents/chat/chat'
+import {replaceArrayItems} from '../../../../utils/array'
+import { summarize } from '../../../../agents/summarize/summarize';
+import { hideFullLoading, showFullLoading } from '../../../../utils/event-bus';
 
 const messageListRef = useTemplateRef('messageListRef')
-
-const messages = reactive([
-    {type: 'assistant', content: '心动的瞬间常常让人记忆深刻，你能展开给我讲讲么？你们当时是在哪儿？在做什么？'},
-    {type: 'user', content: '我们在咖啡馆见面，她穿着一件红色的连衣裙，阳光透过窗户洒在她的头发上，显得格外耀眼。'},
-    {type: 'assistant', content: '有哪些留下来的东西呢？比如照片，聊天截图……'},
-]);
-
+const router = useRouter();
 let isFetching = ref(false);
+const id = useRoute().params.id;
+const currentMemento = computed(() => memento.value.find(item => item.mementoId === id));
+
+// 创建聊天agent
+const {sendMessage, getHistory} = createChatAgent({
+    theme: theme.value,
+    word: currentMemento.value.word,
+    // history: currentMemento.value.chatHistory
+});
+
+const messages = reactive(currentMemento.value.chatHistory);
+
+console.log('current memento', currentMemento.value);
 
 function scrollToBottom() {
     nextTick(() => {
@@ -21,42 +34,100 @@ function scrollToBottom() {
     });
 }
 
-function handleSendMessage(message) {
+function handleSendMessage(message, type='text') {
+    console.log('Sending message:', message);
     if (isFetching.value || !message || !message?.length) return;
     isFetching.value = true;
-    messages.push({type: 'user', content: message});
+    messages.push({role: 'user', content: message});
     scrollToBottom();
     
-    // 模拟AI回复
-    const res = "谢谢你分享这个美好的瞬间！";
-    messages.push({type: 'assistant', content: '', loading: true});
+    messages.push({role: 'assistant', content: '', loading: true});
     scrollToBottom();
     
-    setTimeout(() => {
-        messages[messages.length - 1] = {type: 'assistant', content: res};
+    sendMessage({
+        type,
+        content: message,
+    }, chunk => {
+        console.log('Received chunk:', chunk);
+        messages[messages.length - 1] = {role: 'assistant', content: chunk};
+        scrollToBottom();
+    }, res => {
+        console.log('Received response:', res);
+        messages[messages.length - 1] = {role: 'assistant', content: res};
+        memento.value = replaceArrayItems(memento.value, item => item.mementoId === id, {
+            ...currentMemento.value,
+            chatHistory: [...getHistory()]
+        });
         isFetching.value = false;
         scrollToBottom();
-    }, 2000);
+    });
+}
+
+function handleBack() {
+    router.back();
+}
+hideFullLoading();
+function handleSummarize() {
+    if (isFetching.value) return;
+    isFetching.value = true;
+    showFullLoading('正在生成记忆碎片');
+    const history = getHistory().filter(item => {
+        return !Array.isArray(item.content)
+    })
+    summarize(history).then(res => {
+        console.log('Summarization result:', res);
+        memento.value = replaceArrayItems(memento.value, item => item.mementoId === id, {
+            ...currentMemento.value,
+            title: res.title,
+            content: res.content
+        });
+        isFetching.value = false;
+        hideFullLoading();
+        router.push(`/workspace/memento-edit/${id}`);
+    });
+}
+
+function handleFileSelect(urls) {
+    console.log('选择的文件:', urls);
+    memento.value = replaceArrayItems(memento.value, item => item.mementoId === id, {
+        ...currentMemento.value,
+        images: [...currentMemento.value.images, ...urls]
+    });
+    handleSendMessage(urls.map(url => ({
+        type: 'input_image', 
+        image_url: url,
+        detail: 'low'
+    })), 'image');
 }
 </script>
-
 
 <template>
     <div :class="$style['chat-container']">
         <div ref="messageListRef" :class="$style['message-list']">
-            <div v-for="(msg, index) in messages" :key="index" :class="msg.type === 'user' ? $style['user-message-item'] : $style['bot-message-item']">
+            <div v-for="(msg, index) in messages" :key="index" :class="msg.role === 'user' ? $style['user-message-item'] : $style['bot-message-item']">
                 <div v-if="msg.loading"><Loading/></div>
-                <div v-else>{{ msg.content }}</div>
+                <div v-else-if="typeof msg.content === 'string'">{{ msg.content }}</div>
+                <div v-else-if="Array.isArray(msg.content)" :class="$style['image-list']">
+                    <img
+                        v-for="(img, imgIndex) in msg.content"
+                        :key="imgIndex"
+                        :src="img.image_url"
+                        :alt="'Image ' + img.image_url + imgIndex"
+                    />
+                </div>
             </div>
         </div>
         <div :class="$style['input-area']">
             <Input
                 placeholder="和ai聊聊你的故事吧"
                 @sendMessage="handleSendMessage"
+                @fileSelect="handleFileSelect"
+                :ban="isFetching"
+                allImageInput
             />
             <div :class="$style['control']">
-                <div :class="$style['back']">返回</div>
-                <div :class="$style['next']">生成记忆碎片</div>
+                <div :class="$style['back']" @click="handleBack">返回</div>
+                <div :class="$style['next']" @click="handleSummarize">生成记忆碎片</div>
             </div>
         </div>
     </div>
@@ -121,7 +192,7 @@ function handleSendMessage(message) {
 .user-message-item {
     max-width: 50%;
     align-self: flex-end;
-    padding: px2vw(10);
+    padding: px2vw(15);
     background: #6F6F6F80;
     border-radius: 8px;
 }
@@ -131,5 +202,12 @@ function handleSendMessage(message) {
     align-self: flex-start;
 }
 
-
+.image-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: px2vw(10) px2vw(10);
+    img {
+        width: px2vw(300px);
+    }
+}
 </style>

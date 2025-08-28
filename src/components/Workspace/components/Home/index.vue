@@ -3,7 +3,7 @@ import Input from './input.vue'
 import Theme from './theme.vue';
 import { recommandTheme } from '@/agents/recommad-theme/recommand-theme';
 import { showFullLoading, hideFullLoading } from '../../../../utils/event-bus';
-import { inspiration } from '../../../../data/session-data';
+import { inspiration, theme } from '../../../../data/session-data';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -18,6 +18,7 @@ function handleSendMessage(message) {
     recommandTheme(message).then((response) => {
         console.log('推荐的主题和场景词:', response);
         inspiration.value = response.words;
+        theme.value = response.theme;
         router.push('/workspace/memento');
     }).catch((error) => {
         console.error('推荐主题失败:', error);

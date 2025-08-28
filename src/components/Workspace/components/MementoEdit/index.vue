@@ -1,14 +1,17 @@
 <script setup>
 import { ref, onMounted, useTemplateRef } from 'vue';
 import Add from '../MementoList/close.vue'
+import { memento } from '../../../../data/session-data';
+import { replaceArrayItems } from '../../../../utils/array';
+import { useRouter, useRoute } from 'vue-router';
 
-const title = ref('第一次心动');
-const content = ref(`高二那年的夏天总是飘着白兰花的香气。
-我在图书馆三楼靠窗的位置写数学题，蝉鸣把空气烘得发黏，笔尖在草稿纸上划了半天，注意力总被斜前方的身影勾走。`);
-const imageList = ref([
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-]);
+const id = useRoute().params.id;
+const router = useRouter();
+
+const currentMemento = memento.value.find(item => item.mementoId === id);
+const title = ref(currentMemento.title);
+const content = ref(currentMemento.content);
+const imageList = ref(currentMemento.images);
 
 const contentRef = useTemplateRef('contentRef');
 
@@ -25,6 +28,20 @@ function handleContentChange(event) {
 function handleTitleChange(event) {
     console.log('标题变化了:', event.target.innerText);
     title.value = event.target.innerText;
+}
+
+function handleSave() {
+    memento.value = replaceArrayItems(memento.value, m => m.mementoId === id, m => ({
+        ...m,
+        title: title.value,
+        content: content.value,
+        images: imageList.value
+    }));
+    router.push('/workspace/memento');
+}
+
+function handleBack() {
+    router.back();
 }
 </script>
 <template>
@@ -58,8 +75,8 @@ function handleTitleChange(event) {
             </div>
         </div>
         <div :class="$style['control']">
-            <div :class="[$style['step-back'], $style['button']]">上一步</div>
-            <div :class="[$style['save-and-return'], $style['button']]">保存并返回</div>
+            <div :class="[$style['step-back'], $style['button']]" @click="handleBack">上一步</div>
+            <div :class="[$style['save-and-return'], $style['button']]" @click="handleSave">保存并返回</div>
         </div>
     </div>
 </template>

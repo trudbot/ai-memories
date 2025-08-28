@@ -2,17 +2,17 @@ import agent, { model } from "./llm.js";
 
 /**
  * 
- * @param {{systemPrompt: string}} params 
+ * @param {{systemPrompt: string; history: Array<{role: 'user' | 'assistant', content: any}>}} params 
  * @returns 
  */
 export function createStreamChat(params) {
   /**
    * @type {Array<{role: 'system' | 'user' | 'assistant', content: any}>}
    */
-  const history = [];
+  const history = params.history || [];
 
   /**
-   * @param {type: 'text' || 'image', content: string} input
+   * @param {type: 'text' || 'image', content: any} input
    * @param {(delta: string) => void} onUpdate
    * @param {(response: string) => void} onFinish
    */
@@ -22,9 +22,7 @@ export function createStreamChat(params) {
       history.push({ role: "user", content: input.content });
     } else if (input.type === "image") {
       history.push({
-        role: "user", content: [
-          { type: 'input_image', image_url: input.content, detail: 'low' }
-        ]
+        role: "user", content: input.content
       });
     }
     console.log('history', history);
@@ -55,7 +53,12 @@ export function createStreamChat(params) {
     })
   }
 
+  function getHistory() {
+    return history;
+  }
+
   return {
-    sendMessage
+    sendMessage,
+    getHistory
   }
 }

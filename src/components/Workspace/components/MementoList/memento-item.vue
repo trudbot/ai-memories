@@ -6,13 +6,14 @@ const {data, isAddBtn} = defineProps(['data', 'isAddBtn']);
 <template>
     <div :class="$style['item']">
         <div v-if="isAddBtn"><Close /></div>
-        <span v-else>{{ data?.title || 'uname' }}</span>
+        <span v-else>{{ data?.title || data?.word || 'uname' }}</span>
     </div>
 </template>
 
 <style lang="scss" module>
 @use "@/mixin.scss" as *;
 .item {
+    cursor: pointer;
     height: px2vw(117);
     @include flex-center();
     color: white;

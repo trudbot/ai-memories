@@ -1,28 +1,25 @@
 <script setup>
 import {ref} from 'vue'
 import MementoItem from './memento-item.vue';
-const mementos = ref([
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-    {title: '初见'},
-]);
+import {memento} from '../../../../data/session-data';
+import { useRouter } from 'vue-router';
+
+const emit = defineEmits(['add', 'mementoClick']);
+const router = useRouter();
+
+function addMemento() {
+    emit('add');
+}
+console.log(memento.value);
+function openChat(item) {
+    console.log('Clicked memento:', item);
+    emit('mementoClick', item);
+}
+
+function generateMemories() {
+    console.log('生成回忆录');
+    router.push('/memories');
+}
 </script>
 
 
@@ -30,14 +27,14 @@ const mementos = ref([
     <div :class="$style['list-container']">
         <div :class="$style['title']">创建记忆碎片</div>
         <div :class="$style['list']">
-            <div v-for="item in mementos" :key="item.title">
-                <MementoItem :data="item" />
+            <div v-for="item in memento" :key="item.title || item.word">
+                <MementoItem :data="item" @click="openChat(item)"/>
             </div>
             <div>
-                <MementoItem :isAddBtn="true" />
+                <MementoItem :isAddBtn="true" @click="addMemento"/>
             </div>
         </div>
-        <div :class="$style['gen']">
+        <div :class="$style['gen']" @click="generateMemories">
             生成回忆录
         </div>
     </div>
