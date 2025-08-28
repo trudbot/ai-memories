@@ -1,11 +1,11 @@
 
-const client = new OSS({
-    // yourRegion填写Bucket所在地域。以华东1（杭州）为例，yourRegion填写为oss-cn-hangzhou。
-    region: "oss-cn-shanghai",
-    authorizationV4: true,
-    // 从STS服务获取的临时访问密钥（AccessKey ID和AccessKey Secret）。
-    bucket: "trudbot-md-img",
-});
+// const client = new OSS({
+//     // yourRegion填写Bucket所在地域。以华东1（杭州）为例，yourRegion填写为oss-cn-hangzhou。
+//     region: "oss-cn-shanghai",
+//     authorizationV4: true,
+//     // 从STS服务获取的临时访问密钥（AccessKey ID和AccessKey Secret）。
+//     bucket: "trudbot-md-img",
+// });
 
 /**
  * 
@@ -60,26 +60,26 @@ export function convertImagesToBase64(files, options = { maxWidth: 800, quality:
     return Promise.all(files.map(file => compressImage(file, options)));
 }
 
-export function upload(files) {
-    // return new Promise(res => {
-    //     res([
-    //         'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756276831981_AD7524461DAE4168C5ADFBD1A.jpg'
-    //     ])
-    // })
-    const promises = [];
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        // 使用当前时间戳作为文件名
-        const timestamp = Date.now();
-        const random = Math.random().toString(36).substring(2, 15);
-        const fileName = `${timestamp}_${random}`;
-        const promise = client.put(fileName, file).then(result => {
-            return result.url;
-        }).catch(err => {
-            console.error('上传失败: ', err);
-            throw err;
-        });
-        promises.push(promise);
-    }
-    return Promise.all(promises);
-}
+// export function upload(files) {
+//     // return new Promise(res => {
+//     //     res([
+//     //         'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756276831981_AD7524461DAE4168C5ADFBD1A.jpg'
+//     //     ])
+//     // })
+//     const promises = [];
+//     for (let i = 0; i < files.length; i++) {
+//         const file = files[i];
+//         // 使用当前时间戳作为文件名
+//         const timestamp = Date.now();
+//         const random = Math.random().toString(36).substring(2, 15);
+//         const fileName = `${timestamp}_${random}`;
+//         const promise = client.put(fileName, file).then(result => {
+//             return result.url;
+//         }).catch(err => {
+//             console.error('上传失败: ', err);
+//             throw err;
+//         });
+//         promises.push(promise);
+//     }
+//     return Promise.all(promises);
+// }
