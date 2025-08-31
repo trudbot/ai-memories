@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue';
-import HomeSvg from './icons/AigcSystemHome.vue';
+import HomeSvg from './icons/Home.vue';
+import ActiveHome from './icons/AigcSystemHome.vue';
 import ToolkitSvg from './icons/AigcSystemAItoolkit.vue';
+import ActiveToolkit from './icons/ActiveToolkit.vue';
 import WorksSvg from './icons/AigcSystemWorks.vue';
 import { useRouter } from 'vue-router';
 
@@ -36,10 +38,14 @@ router.beforeEach(e => {
     <div :class="$style['sidebar-container']">
         <div :class="$style['menu']">
             <div :class="[$style['menu-item'], { [$style['active']]: activeItem === 'home' }]" @click="sidebarItemClick('home')">
-                <HomeSvg /><span :class="$style['text']">首页</span>
+                <ActiveHome v-if="activeItem === 'home'"/>
+                <HomeSvg  v-else />
+                <span :class="$style['text']">首页</span>
             </div>
             <div :class="[$style['menu-item'], { [$style['active']]: activeItem === 'inspiration' }]" @click="sidebarItemClick('inspiration')">
-                <ToolkitSvg /><span :class="$style['text']">回忆碎片</span>
+                <ActiveToolkit v-if="activeItem === 'inspiration'"/>
+                <ToolkitSvg v-else/>
+                <span :class="$style['text']">回忆碎片</span>
             </div>
             <div :class="[$style['menu-item'], { [$style['active']]: activeItem === 'myWorks' }]" @click="sidebarItemClick('myWorks')">
                 <WorksSvg /><span :class="$style['text']">我的作品</span>

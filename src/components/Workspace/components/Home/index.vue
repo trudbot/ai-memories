@@ -2,8 +2,8 @@
 import Input from './input.vue'
 import Theme from './theme.vue';
 import { recommandTheme } from '@/agents/recommad-theme/recommand-theme';
-import { showFullLoading, hideFullLoading } from '../../../../utils/event-bus';
-import { inspiration, theme } from '../../../../data/session-data';
+import { showFullLoading, hideFullLoading, showToast } from '../../../../utils/event-bus';
+import { inspiration, theme, userWant } from '../../../../data/session-data';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -19,11 +19,12 @@ function handleSendMessage(message) {
         console.log('推荐的主题和场景词:', response);
         inspiration.value = response.words;
         theme.value = response.theme;
+        userWant.value = message;
         router.push('/workspace/memento');
     }).catch((error) => {
         console.error('推荐主题失败:', error);
+        showToast('推荐主题失败，请稍后重试', { type: 'error', duration: 2500 });
     }).finally(() => {
-        console.log('关闭loading')
         isFetching = false;
         hideFullLoading();
     });
@@ -45,7 +46,7 @@ function handleThemeSelected(theme) {
 @use '@/mixin.scss' as *;
 .workspace-home-container {
   width: 100%;
-  padding-top: 45px;
+  padding-top: px2vw(24);
   padding-left: px2vw(16);
   padding-right: px2vw(88);
 }

@@ -10,6 +10,15 @@ function navigateToWorkspace() {
 
 <template>
     <div :class="$style['home-container']">
+        <video
+            :class="$style['bg-video']"
+            src="https://psstatic.cdn.bcebos.com/operation/2025_ncee/终版视频_1756632665000.mp4"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+        ></video>
         <div :class="$style['home-content']">
             <div :class="$style['line']">把时光</div>
             <div :class="$style['line']">存成永不褪色的模样</div>
@@ -29,10 +38,16 @@ function navigateToWorkspace() {
   width: 100%;
   background-color: black;
   position: relative;
+}
 
-  background-image: url('https://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/%E6%96%B0%E5%AF%B9%E8%AF%9D.png');
-  background-size: cover;
-  background-position: center;
+.bg-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .home-content {
@@ -41,9 +56,8 @@ function navigateToWorkspace() {
     .line {
         font-family: PingFang SC;
         font-weight: 600;
-        font-style: Semibold;
+        font-style: normal;
         font-size: 64px;
-        leading-trim: NONE;
         line-height: 90px;
         letter-spacing: 0px;
         color: white;
@@ -95,6 +109,7 @@ function navigateToWorkspace() {
     width: px2vw(622);
     top: 0;
     left: 0;
+    z-index: 1;
     background: linear-gradient(270.53deg, rgba(0, 0, 0, 0) 0.35%, #000000 99.43%);
 }
 </style>

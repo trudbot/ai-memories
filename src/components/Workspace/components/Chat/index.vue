@@ -70,7 +70,7 @@ hideFullLoading();
 function handleSummarize() {
     if (isFetching.value) return;
     isFetching.value = true;
-    showFullLoading('正在生成记忆碎片');
+    showFullLoading('正在生成回忆碎片');
     const history = getHistory().filter(item => {
         return !Array.isArray(item.content)
     })
@@ -127,7 +127,7 @@ function handleFileSelect(urls) {
             />
             <div :class="$style['control']">
                 <div :class="$style['back']" @click="handleBack">返回</div>
-                <div :class="$style['next']" @click="handleSummarize">生成记忆碎片</div>
+                <div :class="$style['next']" @click="handleSummarize">生成回忆碎片</div>
             </div>
         </div>
     </div>

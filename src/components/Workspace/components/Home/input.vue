@@ -10,7 +10,7 @@ import { createVoiceInput } from '../../../../utils/voice-input';
 
 const text = ref('');
 const fileInputRef = useTemplateRef('fileInputRef');
-const {start, onResult, onError} = createVoiceInput();
+const {start, onResult, onError, stop} = createVoiceInput();
 
 // 向上层发生消息事件
 const emitter = defineEmits(['sendMessage', 'fileSelect']);
@@ -55,11 +55,11 @@ function handleFileSelect(event) {
             setTimeout(() => {
                 hideFullLoading();
                 emitter('fileSelect', urls);
-            }, 3000);
+            }, 1000);
         }).catch(err => {
             hideFullLoading();
             console.error('上传失败:', err);
-        })
+        });
     } catch (err) {
         hideFullLoading();
     }
@@ -70,6 +70,11 @@ function handleFileSelect(event) {
 const voicing = ref(false);
 
 function handleVoiceInput() {
+    if (voicing.value) {
+        stop();
+        voicing.value = false;
+        return;
+    }
     voicing.value = true;
     start();
     onResult((transcript) => {
@@ -89,6 +94,15 @@ function handleVoiceInput() {
             :class="$style['input-box']"
             :placeholder="placeholder"
             v-model="text"
+            @keydown.enter.prevent="(e) => {
+                if (e.shiftKey) {
+                    e.preventDefault();
+                    text += '\n';
+                } else {
+                    e.preventDefault();
+                    handleSend();
+                }
+            }"
         ></textarea>
         <div :class="$style['functions']">
             <div v-if="allImageInput" :class="$style['image-input']" @click="triggerFileInput"><ImageIcon /></div>
@@ -157,6 +171,7 @@ function handleVoiceInput() {
 
     .image-input {
         transform: translateY(5px);
+        cursor: pointer;
     }
 
     .voice-input {

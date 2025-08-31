@@ -1,8 +1,7 @@
 <script setup>
-import { ref } from 'vue';
 import { inspiration } from '../../../../data/session-data';
 
-const emit = defineEmits(['select']);
+const emit = defineEmits(['select', 'change']);
 
 function selectInspiration(item) {
     console.log('selected inspiration:', item);
@@ -20,11 +19,46 @@ function selectInspiration(item) {
                 <span>{{ item }}</span>
             </div>
         </div>
+        <div :class="$style['change']" @click="emit('change')">换一批</div>
     </div>
 </template>
 
 <style module lang="scss">
 @use '@/mixin.scss' as *;
+
+.inspiration-container {
+  position: relative;
+
+  .change {
+    position: absolute;
+    right: px2vw(30);
+    top: calc(100% + 20px);
+    color: #00F6FF;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    transition: color 160ms ease, transform 160ms ease, text-shadow 160ms ease, opacity 160ms ease;
+    will-change: transform;
+
+    &:hover {
+      color: #7FFBFF;
+      transform: translateY(-1px);
+      text-shadow: 0 0 10px rgba(0, 246, 255, 0.6);
+    }
+
+    &:active {
+      transform: translateY(0);
+      opacity: 0.9;
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(0, 246, 255, 0.8);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+}
 
 .title {
   font-size: 18px;
@@ -55,7 +89,7 @@ function selectInspiration(item) {
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  border-width: 1px;
+  // border-width: 1px;
 
   font-size: 14px;
   background: #32415280;

@@ -8,7 +8,7 @@ const image = data.imgs;
 
 <template>
     <Wrapper class="wrapper full-cover-bg">
-        <div class="title">{{ title }}</div>
+        <div class="title" v-html="title"></div>
         <div :style="{
             backgroundImage: `url(${image[0]})`
         }" class="slot1"></div>

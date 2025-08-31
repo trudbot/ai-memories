@@ -10,8 +10,8 @@ const image = data.imgs[0];
 
 <template>
     <Wrapper class="wrapper full-cover-bg">
-        <div class="title">{{ title }}</div>
-        <div class="content">{{ content }}</div>
+        <div class="title" v-html="title"></div>
+        <div class="content" v-html="content"></div>
         <div class="main-img full-cover-bg">
         </div>
         <div

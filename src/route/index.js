@@ -6,9 +6,8 @@ import WorkspaceHome from '../components/Workspace/components/Home/index.vue'
 
 const routes = [
   { path: '/', component: HomeView },
-  { path: '/chat', component: () => import('../chat.vue') },
   { path: '/tpl', component: () => import('../template/themes/dark/tpl3.vue') },
-  { path: '/memories', component: () => import('../components/Memories/index.vue') },
+  // { path: '/memories', component: () => import('../components/Memories/index.vue') },
   { 
     path: '/workspace', 
     component: WorkspaceView,
@@ -27,7 +26,7 @@ const routes = [
       },
       {
         path: 'myWorks',
-        component: () => import('@/components/Workspace/components/MyWorks/index.vue')
+        component: () => import('@/components/Workspace/components/Memories/index.vue')
       },
       {
         path: 'memento-chat/:id',

@@ -54,3 +54,17 @@ export function hideFullLoading() {
     emitter.emit('full-loading:hide');
 }
 // ...existing code...
+
+/**
+ * Toast helpers
+ * emitter.emit('toast:show', { message: string, type?: 'info'|'success'|'warning'|'error', duration?: number })
+ * emitter.emit('toast:clear')
+ */
+export function showToast(message, options = {}) {
+    const { type = 'info', duration = 2000 } = options || {};
+    emitter.emit('toast:show', { message, type, duration });
+}
+
+export function clearToast() {
+    emitter.emit('toast:clear');
+}

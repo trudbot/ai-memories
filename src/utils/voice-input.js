@@ -30,6 +30,7 @@ export function createVoiceInput() {
 
   return {
     start: () => recognition.start(),
+    stop: () => recognition.stop(),
     onResult: (handler) => {
       resultHandler = handler;
     },

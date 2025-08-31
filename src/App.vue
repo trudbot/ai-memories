@@ -1,6 +1,7 @@
 <script lang="js" setup>
 import Header from './components/Header/index.vue';
 import FullLoading from './components/FullLoading/index.vue';
+import Toast from './components/Toast/index.vue';
 </script>
 
 <template>
@@ -13,6 +14,7 @@ import FullLoading from './components/FullLoading/index.vue';
     </div>
   </div>
   <FullLoading />
+  <Toast />
 </template>
 
 <style module lang="scss">

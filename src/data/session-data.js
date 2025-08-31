@@ -2,10 +2,14 @@ import { ref } from "vue";
 import {genId} from '../utils/genId';
 
 /**
+ * 用户要
+ */
+export const userWant = ref('');
+export const theme = ref('');
+/**
  * @type {{value: string[]}}}
  * @description 灵感词列表
  */
-export const theme = ref('');
 export const inspiration = ref([
     "清晨的第一缕阳光",
     "上学路上的伙伴",
@@ -47,4 +51,8 @@ export function addDefaultMemento(word) {
         chatHistory: [],
         createdAt: Date.now().toString(),
     });
+}
+
+export function removeMemento(item) {
+    memento.value = memento.value.filter(m => m.mementoId !== item.mementoId);
 }

@@ -6,7 +6,7 @@ const router = useRouter();
 <template>
   <div :class="$style['header-container']">
     <div :class="$style['brand']" @click="() => router.push('/')">
-        Memory
+        
     </div>
   </div>
 </template>
@@ -24,14 +24,9 @@ const router = useRouter();
 .brand {
     width: 112px;
     height: 25px;
-    color: white;
-    font-family: Abril Fatface;
-    font-weight: 400;
-    font-style: Regular;
-    font-size: 16px;
-    leading-trim: NONE;
-    line-height: 14px;
-    letter-spacing: 0px;
+    background-image: url('http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756375335315_Group%201312318023.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
     margin-left: px2vw(38);
     @include flex-center;
     cursor: pointer;

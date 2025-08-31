@@ -75,8 +75,8 @@ function handleBack() {
             </div>
         </div>
         <div :class="$style['control']">
-            <div :class="[$style['step-back'], $style['button']]" @click="handleBack">上一步</div>
             <div :class="[$style['save-and-return'], $style['button']]" @click="handleSave">保存并返回</div>
+            <div :class="[$style['step-back'], $style['button']]" @click="handleBack">上一步</div>
         </div>
     </div>
 </template>
@@ -164,5 +164,14 @@ function handleBack() {
     background: #1B232C;
     @include flex-center();
     cursor: pointer;
+
+    transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease, color .2s ease;
+
+    &:hover {
+        background-color: #222b34;
+        box-shadow: 0 0 px2vw(10) rgba(255,255,255,0.12);
+        transform: translateY(-1px);
+    }
+    &:active { transform: translateY(0); }
 }
 </style>

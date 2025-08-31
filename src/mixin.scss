@@ -24,6 +24,7 @@ $design-width: 1440 !default;
   }
 
   @return math.div($value, $base) * 100vw;
+  // @return max(math.div($value, $base) * 100vw, $value * 1px);
 }
 
 @function minvw($value) {
