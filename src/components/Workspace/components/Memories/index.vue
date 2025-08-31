@@ -9,6 +9,9 @@ import { memento } from '@/data/session-data';
 import { uiChoose } from '@/agents/ui-choose/ui-choose';
 import { ref, computed, watch } from 'vue';
 import { genId } from '@/utils/genId';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const uiComponents = {
     tpl1,
@@ -18,7 +21,20 @@ const uiComponents = {
     tpl5
 }
 
-showFullLoading('正在生成中...');
+const icons = [
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633841131_1b93a570a9cfea7339400496a6962c72.png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633841235_37364a93583b81ae1f81b0a44682572c.png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633841335_87123684-a25f3d74bbabd46ff7203ff1faad82b3365238e794512a34900ae0914b1d8cc4.png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633841432_87701760-918b8efdc8c57ae448947e9ecf83d3ec836dde010c0126cb2b803d5a9885a079.png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633841534_%E5%96%87%E5%8F%AD.png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633841632_%E5%BD%A2%E7%8A%B6%201%201.png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633841728_a9f8731323ed8af9bb7990e55ca7aeb3.png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633841823_bf55835f95047ceec4c8490cf0684cd1.png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633841919_Group%201312318028%20(1).png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633842013_Group%202036085815.png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633842111_Group%202036085828.png',
+  'http://trudbot-md-img.oss-cn-shanghai.aliyuncs.com/1756633842221_Rectangle.png'
+]
 
 const allImages = memento.value.reduce((acc, item) => {
     return [...acc, ...(item.images || [])]
@@ -134,30 +150,35 @@ const data = {
   "error": false
 }
 
-if (test_memento.length > 0) {
-    // setTimeout(() => {
-    //     ui.value = data.memoryUI;
-    //     hideFullLoading();
-    // }, 1000);
-    // console.log('开始生成ui');
-    uiChoose(test_memento).then(res => {
-        console.log('生成结果', res);
-        ui.value = res.memoryUI.map(item => {
-          return {
-            ...item,
-            slots: {
-              ...item.slots,
-              imgs: item.slots.imgs.map(imgId => imgMap[imgId] || imgId)
-            }
-          };
-        });
-    }).finally(() => {
+function generateUI() {
+    showFullLoading('正在生成中...');
+    if (test_memento.length > 0) {
+        setTimeout(() => {
+                ui.value = data.memoryUI;
+                hideFullLoading();
+        }, 1000);
+        // console.log('开始生成ui');
+        // uiChoose(test_memento).then(res => {
+        //     console.log('生成结果', res);
+        //     ui.value = res.memoryUI.map(item => {
+        //       return {
+        //         ...item,
+        //         slots: {
+        //           ...item.slots,
+        //           imgs: item.slots.imgs.map(imgId => imgMap[imgId] || imgId)
+        //         }
+        //       };
+        //     });
+        // }).finally(() => {
+        //     hideFullLoading();
+        // });
+    } else {
+        console.log('无回忆碎片');
         hideFullLoading();
-    });
-} else {
-    console.log('无回忆碎片');
-    hideFullLoading();
+    }
 }
+
+generateUI();
 </script>
 
 <template>
@@ -182,10 +203,9 @@ if (test_memento.length > 0) {
           <div :class="$style['sticker']">
               <div :class="$style['sticker-title']">贴纸库</div>
               <div :class="$style['sticker-list']">
-                  <div :class="$style['sticker-item']">贴纸1</div>
-                  <div :class="$style['sticker-item']">贴纸2</div>
-                  <div :class="$style['sticker-item']">贴纸3</div>
-                  <div :class="$style['sticker-item']">贴纸4</div>
+                  <div :class="$style['sticker-item']" v-for="url in icons">
+                    <img :src="url" alt="贴纸" />
+                  </div>
               </div>
           </div>
        <div :class="$style['nav']">
@@ -194,8 +214,8 @@ if (test_memento.length > 0) {
        </div>
       </div>
   <div :class="$style['bottom-control']">
-     <div :class="$style['back']">←</div>
-         <div :class="$style['reflash']">重新生成</div>
+     <div :class="$style['back']" @click="router.back()">←</div>
+         <div :class="$style['reflash']" @click="generateUI">重新生成</div>
          <div :class="$style['print']">打印成册</div>
       </div>
   </div>
