@@ -152,26 +152,26 @@ const data = {
 
 function generateUI() {
     showFullLoading('正在生成中...');
-    if (test_memento.length > 0) {
-        setTimeout(() => {
-                ui.value = data.memoryUI;
-                hideFullLoading();
-        }, 1000);
-        // console.log('开始生成ui');
-        // uiChoose(test_memento).then(res => {
-        //     console.log('生成结果', res);
-        //     ui.value = res.memoryUI.map(item => {
-        //       return {
-        //         ...item,
-        //         slots: {
-        //           ...item.slots,
-        //           imgs: item.slots.imgs.map(imgId => imgMap[imgId] || imgId)
-        //         }
-        //       };
-        //     });
-        // }).finally(() => {
-        //     hideFullLoading();
-        // });
+    if (memento.value.length > 0) {
+        // setTimeout(() => {
+        //         ui.value = data.memoryUI;
+        //         hideFullLoading();
+        // }, 1000);
+        console.log('开始生成ui', memento.value);
+        uiChoose(memento.value).then(res => {
+            console.log('生成结果', res);
+            ui.value = res.memoryUI.map(item => {
+              return {
+                ...item,
+                slots: {
+                  ...item.slots,
+                  imgs: item.slots.imgs.map(imgId => imgMap[imgId] || imgId)
+                }
+              };
+            });
+        }).finally(() => {
+            hideFullLoading();
+        });
     } else {
         console.log('无回忆碎片');
         hideFullLoading();
