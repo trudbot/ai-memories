@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { showToast } from "../utils/event-bus";
 
 // ----------node环境下设置clash代理----------------
 const PROXY = "http://127.0.0.1:7890";
@@ -93,12 +94,22 @@ export async function createOpenAIClient({ apiKey, baseURL } = {}) {
     (typeof import.meta !== "undefined" && import.meta.env?.VITE_OPENAI_BASE_URL) ||
     nodeEnv.VITE_OPENAI_BASE_URL ||
     undefined;
-  return new OpenAI({
-    apiKey: key,
-    baseURL: base,
-    dangerouslyAllowBrowser: true,
-    // fetch: autoProxyFetch
-  });
+  try {
+    return new OpenAI({
+      apiKey: key,
+      baseURL: base,
+      dangerouslyAllowBrowser: true,
+      // fetch: autoProxyFetch
+    });
+  } catch (err) {
+    if (typeof window !== "undefined") {
+        showToast('你没有设置apikey', {
+          type: 'error',
+          duration: 1000 * 1000
+        });
+    }
+    return null;
+  }
 }
 
 // 辅助函数：设置浏览器存储中的 API 配置
