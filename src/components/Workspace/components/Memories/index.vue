@@ -152,13 +152,13 @@ const data = {
 
 function generateUI() {
     showFullLoading('正在生成中...');
-    if (memento.value.length > 0) {
+    if (memories.length > 0) {
         // setTimeout(() => {
         //         ui.value = data.memoryUI;
         //         hideFullLoading();
         // }, 1000);
-        console.log('开始生成ui', memento.value);
-        uiChoose(memento.value).then(res => {
+        console.log('开始生成ui', memories);
+        uiChoose(memories).then(res => {
             console.log('生成结果', res);
             ui.value = res.memoryUI.map(item => {
               return {
