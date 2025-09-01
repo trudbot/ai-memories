@@ -2,6 +2,16 @@
 import Header from './components/Header/index.vue';
 import FullLoading from './components/FullLoading/index.vue';
 import Toast from './components/Toast/index.vue';
+import openai from './llm/llm';
+import { showToast } from './utils/event-bus';
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  showToast('你没有设置apikey', {
+    type: 'error',
+    duration: 1000 * 1000
+  });
+})
 </script>
 
 <template>

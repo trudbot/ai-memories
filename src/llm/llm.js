@@ -102,13 +102,7 @@ export async function createOpenAIClient({ apiKey, baseURL } = {}) {
       // fetch: autoProxyFetch
     });
   } catch (err) {
-    if (typeof window !== "undefined") {
-        showToast('你没有设置apikey', {
-          type: 'error',
-          duration: 1000 * 1000
-        });
-    }
-    return null;
+    return undefined;
   }
 }
 
