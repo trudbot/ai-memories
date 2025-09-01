@@ -7,10 +7,12 @@ import { showToast } from './utils/event-bus';
 import { onMounted } from 'vue';
 
 onMounted(() => {
-  showToast('你没有设置apikey', {
-    type: 'error',
-    duration: 1000 * 1000
-  });
+  if (!openai) {
+    showToast('你没有设置apikey', {
+      type: 'error',
+      duration: 1000 * 1000
+    });
+  }
 })
 </script>
 
