@@ -23,12 +23,12 @@ const emit = defineEmits(['remove']);
 <style lang="scss" module>
 @use "@/mixin.scss" as *;
 .item {
-    font-size: max(14px, px2vw(14));
+    font-size: max(18px, px2vw(18));
     cursor: pointer;
     height: px2vw(117);
     @include flex-center();
     color: white;
-    border-width: 1.01px;
+    // border-width: 1.01px;
     border-radius: 8.08px;
     position: relative;
 

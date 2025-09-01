@@ -15,7 +15,7 @@ function handleInspirationSelect(item) {
 }
 
 function handleAdd() {
-  addDefaultMemento('任意');
+  addDefaultMemento('未命名');
 }
 
 function handleMementoClick(item) {

@@ -12,7 +12,7 @@ function navigateToWorkspace() {
     <div :class="$style['home-container']">
         <video
             :class="$style['bg-video']"
-            src="https://psstatic.cdn.bcebos.com/operation/2025_ncee/终版视频_1756632665000.mp4"
+            src="https://psstatic.cdn.bcebos.com/operation/2025_ncee/syp_1_1756703091000.mp4"
             autoplay
             muted
             loop
