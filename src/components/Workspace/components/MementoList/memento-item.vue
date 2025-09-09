@@ -16,7 +16,7 @@ const emit = defineEmits(['remove']);
             ×
         </button>
         <div v-if="isAddBtn"><Close /></div>
-        <span v-else>{{ data?.title || data?.word || 'uname' }}</span>
+        <span v-else>{{ data?.title || data?.word?.value || 'uname' }}</span>
     </div>
 </template>
 

@@ -16,7 +16,7 @@ function selectInspiration(item) {
         </div>
         <div :class="$style['inspiration-list']">
             <div :class="$style['inspiration-item']" v-for="(item, index) in inspiration" :key="index" @click="selectInspiration(item)">
-                <span>{{ item }}</span>
+                <span>{{ item.value }}</span>
             </div>
         </div>
         <div :class="$style['change']" @click="emit('change')">换一批</div>

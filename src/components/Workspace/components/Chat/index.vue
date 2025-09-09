@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, nextTick, useTemplateRef, computed } from 'vue';
+import { reactive, ref, nextTick, useTemplateRef, computed, onMounted } from 'vue';
 import Input from '../Home/input.vue';
 import Loading from '../Loading/index.vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -18,7 +18,7 @@ const currentMemento = computed(() => memento.value.find(item => item.mementoId 
 // 创建聊天agent
 const {sendMessage, getHistory} = createChatAgent({
     theme: theme.value,
-    word: currentMemento.value.word,
+    word: currentMemento.value.word.value,
     // history: currentMemento.value.chatHistory
 });
 
@@ -33,6 +33,28 @@ function scrollToBottom() {
         }
     });
 }
+
+// 主动发消息
+onMounted(() => {
+    if (!currentMemento.value?.word?.prompt) return;
+    isFetching.value = true;
+    const msg = currentMemento.value.word.prompt;
+    messages.push({role: 'assistant', content: '', loading: true});
+    setTimeout(() => {
+        let idx = 0;
+        const interval = setInterval(() => {
+            if (idx <= msg.length) {
+                messages[messages.length - 1] = {role: 'assistant', content: msg.slice(0, idx + 1)};
+                scrollToBottom();
+                idx++;
+            } else {
+                clearInterval(interval);
+                isFetching.value = false;
+                scrollToBottom();
+            }
+        }, 100);
+    }, 1500);
+})
 
 function handleSendMessage(message, type='text') {
     console.log('Sending message:', message);

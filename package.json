@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --base /ai-memories/",
-    "preview": "vite preview"
+    "preview": "vite preview --base /ai-memories/"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.12",
     "ant-design-x-vue": "^1.3.2",
+    "axios": "^1.11.0",
     "exifreader": "^4.31.0",
     "https-proxy-agent": "^7.0.6",
     "markdown-it": "^14.1.0",

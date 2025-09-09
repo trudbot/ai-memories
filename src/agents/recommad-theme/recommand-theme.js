@@ -4,7 +4,10 @@ import { requestJsonOutput } from '../../llm/jsonAgent.js';
 
 export const RecommandThemeSchema = z.object({
     theme: z.string().min(1, "主题不能为空").describe("主题词"),
-    words: z.array(z.string()).describe("当前主题下推荐的场景词"),
+    words: z.array(z.object({
+        value: z.string().describe("场景词"),
+        prompt: z.string().describe("关于该场景词的聊天开场白")
+    })).describe("当前主题下推荐的场景词及其开场白"),
     error: z.boolean().default(false).describe("是否能出用户输入中读取出主题")
 });
 

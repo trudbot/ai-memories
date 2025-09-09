@@ -19,5 +19,8 @@ export default defineConfig({
         drop_debugger: true
       }
     }
+  },
+  define: {
+    BROWSER: true
   }
 })
