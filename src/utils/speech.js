@@ -38,7 +38,7 @@ export default class SpeechRecognizer {
       throw new Error('当前浏览器不支持语音识别（请使用 Chrome/Edge/Safari）');
     }
 
-    this.recognition =;
+    this.recognition = null;
     this.isRunning = false;
   }
 
@@ -131,6 +131,6 @@ export default class SpeechRecognizer {
    */
   destroy() {
     this.stop();
-    this.recognition =;
+    this.recognition = null;
   }
 }
