@@ -10,6 +10,8 @@ import { uiChoose } from '@/agents/ui-choose/ui-choose';
 import { ref, computed, watch } from 'vue';
 import { genId } from '@/utils/genId';
 import { useRouter } from 'vue-router';
+import { imgDesc } from '../../../../llm/imgDesc';
+import PreStep from './pre.vue';
 
 const router = useRouter();
 
@@ -97,6 +99,46 @@ const isNextDisabled = computed(() => totalPages.value === 0 || page.value >= to
 const prev = () => { if (!isPrevDisabled.value) page.value -= 1; };
 const next = () => { if (!isNextDisabled.value) page.value += 1; };
 
+// 拖拽相关状态
+const draggedSticker = ref(null);
+const droppedStickers = ref([]); // 存储已放置的贴纸 [{url, x, y, pageIndex}]
+
+// 拖拽开始
+function handleDragStart(event, stickerUrl) {
+  draggedSticker.value = stickerUrl;
+  event.dataTransfer.setData('text/plain', stickerUrl);
+}
+
+// 允许放置
+function handleDragOver(event) {
+  event.preventDefault();
+}
+
+// 放置贴纸
+function handleDrop(event, pageIndex) {
+  event.preventDefault();
+  
+  if (!draggedSticker.value) return;
+  
+  const pageElement = event.currentTarget;
+  const rect = pageElement.getBoundingClientRect();
+  
+  // 计算相对于页面元素的位置
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  
+  // 添加新贴纸
+  droppedStickers.value.push({
+    url: draggedSticker.value,
+    x: x - 15, // 减去贴纸宽度的一半，让贴纸居中
+    y: y - 15, // 减去贴纸高度的一半，让贴纸居中
+    pageIndex: (page.value * 2) + pageIndex, // 全局页面索引
+    id: Date.now() + Math.random() // 唯一ID
+  });
+  
+  draggedSticker.value = null;
+}
+
 // reset to first page whenever ui list changes (e.g., regenerated)
 watch(ui, () => { page.value = 0; });
 
@@ -150,13 +192,33 @@ const data = {
   "error": false
 }
 
-function generateUI() {
+async function generateUI() {
     showFullLoading('正在生成中...');
+    // ui.value = data.memoryUI.map(item => {
+    //   return {
+    //     ...item,
+    //     slots: {
+    //       ...item.slots,
+    //       imgs: item.slots.imgs.map(imgId => imgMap[imgId] || imgId)
+    //     }
+    //   };
+    // });
     if (memories.length > 0) {
-        // setTimeout(() => {
-        //         ui.value = data.memoryUI;
-        //         hideFullLoading();
-        // }, 1000);
+        const imgs = Object.getOwnPropertyNames(imgMap);
+        const descs = await imgDesc(imgs.map(id => imgMap[id]));
+        const descMap = {};
+        imgs.forEach((id, idx) => {
+            descMap[id] = descs[idx];
+        });
+        console.log('图片描述', descs);
+        memories.forEach(mem => {
+            mem.imgs = mem.imgs.map((imgId) => {
+                return {
+                    id: imgId,
+                    desc: descMap[imgId] || ''
+                }
+            });
+        });
         console.log('开始生成ui', memories);
         uiChoose(memories).then(res => {
             console.log('生成结果', res);
@@ -183,27 +245,44 @@ generateUI();
 
 <template>
   <div :class="$style['memories-container']">
-    <!-- <template v-for="module in ui">
-        <component
-            v-if="uiComponents[module.name]"
-            :is="uiComponents[module.name]"
-            :data="module.slots"
-        />
-    </template> -->
     <div :class="$style['memory-show']">
           <transition-group name="fade-scale" tag="div" :class="$style['pages']">
-            <div :class="[$style['page'], i === 0 ? 'page-left' : 'page-right']" v-for="(module, i) in visibleUi" :key="(page * 2) + i">
-            <component
-                v-if="uiComponents[module.name]"
-                :is="uiComponents[module.name]"
-                :data="module.slots"
-            />
+            <div 
+              :class="[$style['page'], i === 0 ? 'page-left' : 'page-right']" 
+              v-for="(module, i) in visibleUi" 
+              :key="(page * 2) + i"
+              @dragover="handleDragOver"
+              @drop="(e) => handleDrop(e, i)"
+            >
+              <component
+                  v-if="uiComponents[module.name]"
+                  :is="uiComponents[module.name]"
+                  :data="module.slots"
+              />
+              <!-- 渲染已放置的贴纸 -->
+              <div 
+                v-for="sticker in droppedStickers.filter(s => s.pageIndex === (page * 2) + i)"
+                :key="sticker.id"
+                :class="$style['dropped-sticker']"
+                :style="{
+                  left: sticker.x + 'px',
+                  top: sticker.y + 'px'
+                }"
+              >
+                <img :src="sticker.url" alt="贴纸" />
+              </div>
             </div>
           </transition-group>
           <div :class="$style['sticker']">
               <div :class="$style['sticker-title']">贴纸库</div>
               <div :class="$style['sticker-list']">
-                  <div :class="$style['sticker-item']" v-for="url in icons">
+                  <div 
+                    :class="$style['sticker-item']" 
+                    v-for="url in icons"
+                    :key="url"
+                    draggable="true"
+                    @dragstart="(e) => handleDragStart(e, url)"
+                  >
                     <img :src="url" alt="贴纸" />
                   </div>
               </div>
@@ -214,7 +293,9 @@ generateUI();
        </div>
       </div>
   <div :class="$style['bottom-control']">
-     <div :class="$style['back']" @click="router.back()">←</div>
+     <div :class="$style['back']" @click="router.back()">
+      <pre-step/>
+     </div>
          <div :class="$style['reflash']" @click="generateUI">重新生成</div>
          <div :class="$style['print']">打印成册</div>
       </div>
@@ -234,7 +315,7 @@ generateUI();
    width: px2vw(199.5);
    height: 100%;
    padding-top: px2vw(31);
-   overflow: scroll;
+  //  overflow: scroll;
 
    .sticker-title {
     font-size: max(px2vw(16), 16px);
@@ -253,6 +334,11 @@ generateUI();
     background: #1B232C;
      border-radius: 6px;
      @include flex-center();
+     cursor: grab;
+     
+     &:active {
+       cursor: grabbing;
+     }
    }
 }
 
@@ -284,6 +370,20 @@ generateUI();
         left: px2vw(372.53);
         top: px2vw(26.78);
        }
+    }
+
+    .dropped-sticker {
+      position: absolute;
+      width: px2vw(30);
+      height: px2vw(30);
+      z-index: 10;
+      pointer-events: none;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
     }
 
     /* explicit left/right positions as global utilities */

@@ -5,11 +5,10 @@ import ActiveHome from './icons/AigcSystemHome.vue';
 import ToolkitSvg from './icons/AigcSystemAItoolkit.vue';
 import ActiveToolkit from './icons/ActiveToolkit.vue';
 import WorksSvg from './icons/AigcSystemWorks.vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
-const activeItem = ref('home');
 const router = useRouter();
-
+const route = useRoute();
 const routeMap = {
     home: '/workspace/home',
     inspiration: '/workspace/memento',
@@ -22,6 +21,8 @@ const reverseRouteMap = {
     '/workspace/myWorks': 'myWorks'
 };
 
+const activeItem = ref(reverseRouteMap[route.path] || 'home');
+
 function sidebarItemClick(item) {
     activeItem.value = item;
     router.push(routeMap[item]);
@@ -31,7 +32,7 @@ router.beforeEach(e => {
     if (reverseRouteMap[e.path]) {
         activeItem.value = reverseRouteMap[e.path];
     }
-})
+});
 </script>
 
 <template>

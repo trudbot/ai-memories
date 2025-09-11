@@ -10,7 +10,7 @@ const uiChooseSchema = z.object({
         slots: z.object({
             title: z.string(),
             content: z.string(),
-            imgs: z.array(z.string().describe('图片标识'))
+            imgs: z.array(z.string().describe('图片的id列表'))
         })
     })),
     error: z.boolean()

@@ -1,4 +1,4 @@
-import { isBrowser } from "./main-check";
+import { isBrowser } from "./main-check.js";
 
 // 检测是否为 Node 环境并读取 .env.local
 export async function loadEnvFromFile() {

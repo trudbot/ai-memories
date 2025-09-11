@@ -49,6 +49,11 @@ onBeforeUnmount(() => {
     }
 }
 
+:global(div) {
+    background-size: cover;
+    background-position: center center;
+}
+
 :global(.title) {
     font-size: calc(24px * var(--ratio));
     line-height: 1;

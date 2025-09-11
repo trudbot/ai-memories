@@ -37,7 +37,7 @@ function loadFromBrowserStorage() {
 async function getBaiduApiKey(key) {
     const browserStorage = loadFromBrowserStorage();
     const nodeEnv = await loadEnvFromFile();
-    return key || browserStorage.VITE_BAIDU_API_KEY || (typeof import.meta !== "undefined" && import.meta.env.VITE_BAIDU_API_KEY) || nodeEnv.VITE_BAIDU_API_KEY || undefined;
+    return key || browserStorage.VITE_BAIDU_API_KEY || (typeof import.meta !== "undefined" && import.meta.env?.VITE_BAIDU_API_KEY) || nodeEnv.VITE_BAIDU_API_KEY || undefined;
 }
 
 export default createApiClient(await getBaiduApiKey());

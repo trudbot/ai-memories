@@ -4,7 +4,7 @@ import MementoItem from './memento-item.vue';
 import {memento} from '../../../../data/session-data';
 import { useRouter } from 'vue-router';
 
-const emit = defineEmits(['add', 'mementoClick', 'remove']);
+const emit = defineEmits(['add', 'mementoClick', 'remove', 'edit']);
 const router = useRouter();
 
 function addMemento() {
@@ -19,6 +19,11 @@ function openChat(item) {
 function generateMemories() {
     router.push('/workspace/myWorks');
 }
+
+function editMemento(item) {
+    console.log('Edit memento', item);
+    emit('edit', item);
+}
 </script>
 
 
@@ -27,7 +32,7 @@ function generateMemories() {
         <div :class="$style['title']">创建回忆碎片</div>
         <TransitionGroup :class="$style['list']" name="memento" tag="div">
             <div v-for="item in memento" :key="item.title || item.word">
-                <MementoItem :data="item" @click="openChat(item)" @remove="emit('remove', item)"/>
+                <MementoItem :data="item" @click="openChat(item)" @remove="emit('remove', item)" @contextmenu.prevent="editMemento(item)"/>
             </div>
             <div :key="'__add'">
                 <MementoItem :isAddBtn="true" @click="addMemento"/>

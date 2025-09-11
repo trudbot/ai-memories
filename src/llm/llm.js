@@ -84,7 +84,7 @@ const openai = await createOpenAIClient();
 
 export default openai;
 
-export const model = 'gpt-5';
+export const model = 'gpt-5-nano';
 // export {
 //   deepseek
 // }

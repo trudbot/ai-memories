@@ -2,7 +2,7 @@
 import VoiceIcon from './icons/voice.vue';
 import VoiceActiveIcon from './icons/voice-active.vue';
 import SendIcon from './icons/send.vue';
-import ImageIcon from './icons/image.vue';
+import UploadIcon from './icons/upload.vue';
 import { ref, useTemplateRef } from 'vue';
 import { hideFullLoading, showFullLoading } from '../../../../utils/event-bus';
 import { convertImagesToBase64 } from '../../../../utils/upload';
@@ -105,7 +105,7 @@ function handleVoiceInput() {
             }"
         ></textarea>
         <div :class="$style['functions']">
-            <div v-if="allImageInput" :class="$style['image-input']" @click="triggerFileInput"><ImageIcon /></div>
+            <div v-if="allImageInput" :class="$style['image-input']" @click="triggerFileInput"><UploadIcon /></div>
             <div 
                 :class="[$style['voice-input'], voicing ? $style['voicing'] : '']" 
                 @click="handleVoiceInput"
@@ -162,7 +162,9 @@ function handleVoiceInput() {
     position: absolute;
     right: 44px;
     bottom: 20px;
-    @include flex(row, flex-start, center);
+    height: 32px;
+    display: flex;
+    align-items: center;
 
     .send, .voice-input {
         margin-left: 20px;
@@ -170,7 +172,6 @@ function handleVoiceInput() {
     }
 
     .image-input {
-        transform: translateY(5px);
         cursor: pointer;
     }
 

@@ -46,6 +46,11 @@ function handleInspirationChange() {
   });
   
 }
+
+function editMemento(memento) {
+    console.log('Edit memento');
+    router.push(`/workspace/memento-edit/${memento.mementoId}`);
+}
 </script>
 
 <template>
@@ -58,6 +63,7 @@ function handleInspirationChange() {
           @add="handleAdd"
           @mementoClick="handleMementoClick"
           @remove="handleRemove"
+          @edit="editMemento"
         />
     </div>
 </template>
