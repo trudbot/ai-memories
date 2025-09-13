@@ -48,7 +48,7 @@ export async function genImg_openai({
     return res.data.map(item => `data:image/png;base64,${item.b64_json}`);
 }
 
-export const genImg = genImg_qianfan;
+export const genImg = genImg_openai;
 
 if (!isBrowser()) {
     // genImg({
